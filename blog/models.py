@@ -158,7 +158,9 @@ class PostViewHistory(models.Model):
     class Meta:
         ordering = ['-viewed_at']
         verbose_name_plural = 'Post view history'
+        unique_together = ('user', 'post')
 
+        
     def __str__(self):
         return f'{self.user} -> {self.post} ({self.viewed_at:%Y-%m-%d %H:%M})'
 

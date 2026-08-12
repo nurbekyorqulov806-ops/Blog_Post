@@ -25,7 +25,16 @@ class ProfileEditForm(forms.ModelForm):
             'avatar': StyledClearableFileInput(),
         }
 
+    def clean_social_links(self):
+        value = self.cleaned_data.get('social_links')
 
+        if value is None:
+            return {}
+
+        return value
+
+
+    
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post

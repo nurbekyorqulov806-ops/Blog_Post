@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 from django.core.exceptions import PermissionDenied
+from django.contrib.auth.forms import AuthenticationForm
 
 from .forms import RegisterForm, ProfileEditForm, PostForm, CommentForm
 from .models import (
@@ -58,36 +59,42 @@ def register_view(request):
 
 def custom_login_view(request):
 
+    if request.user.is_authenticated:
+        return redirect('/')
+
     if request.method == 'POST':
 
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-
-        user = authenticate(
+        form = AuthenticationForm(
             request,
-            username=username,
-            password=password
+            data=request.POST
         )
 
-        if user is not None:
+        if form.is_valid():
+
+            user = form.get_user()
 
             login(request, user)
 
-            next_url = request.GET.get('next')
+            next_url = (
+                request.POST.get('next')
+                or request.GET.get('next')
+            )
 
             if next_url:
                 return redirect(next_url)
 
             return redirect('/')
 
-        messages.error(
-            request,
-            "Username yoki parol noto'g'ri."
-        )
+    else:
+
+        form = AuthenticationForm()
 
     return render(
         request,
-        'login.html'
+        'login.html',
+        {
+            'form': form
+        }
     )
 
 
@@ -305,29 +312,33 @@ def post_detail(request, slug):
         Post,
         slug=slug
     )
-
-    # -------------------------
-    # VIEWS COUNT
-    # -------------------------
-
-    Post.objects.filter(
-        pk=post.pk
-    ).update(
-        views_count=post.views_count + 1
-    )
-
-    post.refresh_from_db()
-
-    # -------------------------
-    # HISTORY
-    # -------------------------
+# -------------------------
+# VIEWS COUNT + HISTORY
+# -------------------------
 
     if request.user.is_authenticated:
 
-        PostViewHistory.objects.create(
+        already_viewed = PostViewHistory.objects.filter(
             user=request.user,
             post=post
-        )
+        ).exists()
+
+        if not already_viewed:
+
+            PostViewHistory.objects.create(
+                user=request.user,
+                post=post
+            )
+
+            Post.objects.filter(
+                pk=post.pk
+            ).update(
+                views_count=post.views_count + 1
+            )
+
+            post.refresh_from_db()
+
+
 
     # -------------------------
     # COMMENTS
