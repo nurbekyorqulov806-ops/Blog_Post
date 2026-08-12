@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card p-6 max-w-md">
+    <p class="mb-4">"{{ object.title }}" postini rostdan ham o'chirmoqchimisiz?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button class="bg-[var(--coral)] text-white px-4 py-2 rounded-full text-sm">Ha, o'chirish</button>
+        <a href="{{ object.get_absolute_url }}" class="ml-3 text-sm text-gray-500">Bekor qilish</a>
+    </form>
+</div>
+{% endblock %}

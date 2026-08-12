@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block content %}
+<div class="max-w-md mx-auto card p-7">
+    <h1 class="font-display text-2xl font-semibold mb-6">Tizimga kirish</h1>
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        {% for field in form %}
+        <div>
+            <label class="block text-sm font-medium mb-1">{{ field.label }}</label>
+            {% if field.field.widget.input_type == 'password' %}
+                <div class="password-wrap">
+                    {{ field|add_class:"input-field" }}
+                    <button type="button" class="password-toggle" onclick="togglePassword(this)">👁</button>
+                </div>
+            {% else %}
+                {{ field|add_class:"input-field" }}
+            {% endif %}
+        </div>
+        {% endfor %}
+        <button class="w-full btn-primary text-center">Kirish</button>
+    </form>
+</div>
+{% endblock %}

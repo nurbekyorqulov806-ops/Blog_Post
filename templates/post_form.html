@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block title %}Post{% endblock %}
+
+{% block content %}
+<h1 class="font-display text-2xl font-semibold mb-6">{% if form.instance.pk %}Postni tahrirlash{% else %}Yangi post{% endif %}</h1>
+<form method="post" enctype="multipart/form-data" class="card p-6 space-y-4 max-w-2xl">
+    {% csrf_token %}
+    {% for field in form %}
+    <div>
+        <label class="block text-sm font-medium mb-1">{{ field.label }}</label>
+        {{ field|add_class:"input-field" }}
+        {% if field.errors %}<p class="text-[var(--coral)] text-xs mt-1">{{ field.errors|striptags }}</p>{% endif %}
+    </div>
+    {% endfor %}
+    <button class="btn-primary">Saqlash</button>
+</form>
+{% endblock %}

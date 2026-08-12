@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block content %}
+<div class="max-w-md mx-auto card p-7">
+    <h1 class="font-display text-2xl font-semibold mb-6">Profilni tahrirlash</h1>
+    <form method="post" enctype="multipart/form-data" class="space-y-4">
+        {% csrf_token %}
+        {% for field in form %}
+        <div>
+            <label class="block text-sm font-medium mb-1">{{ field.label }}</label>
+            {% if field.name == 'avatar' %}
+                <div class="flex items-start gap-4">
+                    <img src="{{ user.avatar.url }}" class="w-16 h-16 rounded-full object-cover border border-[var(--sand)] shrink-0">
+                    <div class="flex-1 text-sm text-gray-500 space-y-2">
+                        {{ field }}
+                    </div>
+                </div>
+            {% else %}
+                {{ field|add_class:"input-field" }}
+            {% endif %}
+            {% if field.errors %}<p class="text-[var(--coral)] text-xs mt-1">{{ field.errors|striptags }}</p>{% endif %}
+        </div>
+        {% endfor %}
+        <button class="w-full btn-primary text-center">Saqlash</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,35 @@
+<button
+    class="like-btn flex items-center gap-1.5 {% if is_liked %}liked{% endif %}"
+    data-url="{% url 'toggle_like' slug=post.slug %}"
+    {% if not user.is_authenticated %}onclick="window.location.href='{% url 'login' %}'"{% endif %}
+>
+    <span class="heart">{% if is_liked %}♥{% else %}♡{% endif %}</span>
+    <span class="likes-count meta">{{ post.likes_count }}</span>
+</button>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.like-btn').forEach(function (btn) {
+        {% if user.is_authenticated %}
+        btn.addEventListener('click', function () {
+            fetch(btn.dataset.url, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                btn.querySelector('.heart').textContent = data.liked ? '♥' : '♡';
+                btn.querySelector('.likes-count').textContent = data.likes_count;
+                btn.classList.toggle('liked', data.liked);
+                btn.classList.remove('pulse');
+                void btn.offsetWidth;
+                if (data.liked) btn.classList.add('pulse');
+            });
+        });
+        {% endif %}
+    });
+});
+</script>

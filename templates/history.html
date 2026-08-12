@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Tarix{% endblock %}
+
+{% block content %}
+<h1 class="font-display text-2xl font-semibold mb-6">Ko'rilgan postlar tarixi</h1>
+<div class="space-y-2">
+    {% for item in history %}
+    <a href="{{ item.post.get_absolute_url }}" class="card card-hover flex items-center justify-between p-3">
+        <span class="font-medium text-sm">{{ item.post.title }}</span>
+        <span class="meta text-gray-400">{{ item.viewed_at|date:"d M Y H:i" }}</span>
+    </a>
+    {% empty %}
+        <p class="text-gray-500">Hali hech qanday post ko'rmagansiz.</p>
+    {% endfor %}
+</div>
+{% endblock %}

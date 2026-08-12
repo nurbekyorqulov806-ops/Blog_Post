@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Blog Platform{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --paper: #F6F4EE;
+            --ink: #1C2621;
+            --moss: #2F5233;
+            --moss-dark: #223D26;
+            --coral: #FF6452;
+            --sand: #E4DECD;
+            --gold: #B9862F;
+        }
+        body { background: var(--paper); color: var(--ink); font-family: 'Inter', sans-serif; }
+        h1, h2, .font-display { font-family: 'Fraunces', serif; }
+        .brand { font-family: 'Fraunces', serif; font-weight: 600; letter-spacing: -0.01em; }
+        .meta { font-family: 'IBM Plex Mono', monospace; font-size: .72rem; letter-spacing: .02em; }
+
+        .card {
+            background: #fff;
+            border: 1px solid var(--sand);
+            border-radius: 16px;
+        }
+        .card-hover { transition: transform .15s ease, box-shadow .15s ease; }
+        .card-hover:hover { transform: translateY(-3px); box-shadow: 0 12px 24px -12px rgba(28,38,33,.18); }
+
+        .btn-primary {
+            background: var(--moss);
+            color: #fff;
+            border-radius: 999px;
+            padding: .55rem 1.3rem;
+            font-size: .875rem;
+            font-weight: 500;
+            transition: background .15s ease;
+            display: inline-block;
+        }
+        .btn-primary:hover { background: var(--moss-dark); }
+
+        .pill {
+            background: #fff;
+            border: 1px solid var(--sand);
+            border-radius: 999px;
+            padding: .4rem 1rem;
+            font-size: .8rem;
+            color: var(--ink);
+            transition: all .15s ease;
+        }
+        .pill:hover { background: var(--gold); color: #fff; border-color: var(--gold); }
+
+        .input-field {
+            border: 1px solid var(--sand);
+            border-radius: 10px;
+            padding: .6rem .85rem;
+            font-size: .875rem;
+            width: 100%;
+            background: #fff;
+        }
+        .input-field:focus { outline: 2px solid var(--moss); outline-offset: 1px; }
+
+        .like-btn { cursor: pointer; background: none; border: none; font-size: 1rem; color: #9CA3AF; }
+        .like-btn.liked { color: var(--coral); }
+        .like-btn .heart { display: inline-block; }
+        @keyframes heartPop {
+            0% { transform: scale(1); }
+            35% { transform: scale(1.45); }
+            60% { transform: scale(0.92); }
+            100% { transform: scale(1); }
+        }
+        .like-btn.pulse .heart { animation: heartPop .38s ease; }
+
+        input[type="file"] { font-size: 0.875rem; color: #6b7280; }
+        input[type="file"]::file-selector-button {
+            background: var(--moss);
+            color: #fff;
+            border: none;
+            padding: 0.4rem 0.9rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-right: 0.75rem;
+            transition: background .15s ease;
+        }
+        input[type="file"]::file-selector-button:hover { background: var(--moss-dark); }
+        input[type="checkbox"] {
+            width: 1rem; height: 1rem; accent-color: var(--moss);
+            vertical-align: middle; margin-right: 0.3rem; cursor: pointer;
+        }
+        textarea { resize: vertical; }
+
+        .password-wrap { position: relative; }
+        .password-wrap input { padding-right: 2.75rem; }
+        .password-toggle {
+            position: absolute;
+            right: 0.6rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            line-height: 1;
+            padding: 0.2rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+    <nav class="bg-[var(--paper)] border-b border-[var(--sand)] sticky top-0 z-10">
+        <div class="max-w-5xl mx-auto flex items-center justify-between px-4 py-3">
+            <a href="{% url 'post_list' %}" class="brand text-xl text-[var(--moss)]">✎ Blog Platform</a>
+            <form action="{% url 'post_list' %}" method="get" class="flex-1 mx-6 hidden sm:block">
+                <input type="text" name="q" placeholder="Qidirish..." value="{{ request.GET.q }}"
+                       class="input-field !rounded-full !py-1.5">
+            </form>
+            <div class="flex items-center gap-4 text-sm">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'post_create' %}" class="text-[var(--moss)] font-medium">+ Post</a>
+                    <a href="{% url 'favorites' %}" class="hover:text-[var(--coral)]">♥ Sevimlilar</a>
+                    <a href="{% url 'history' %}" class="hover:text-[var(--moss)]">Tarix</a>
+                    <a href="{% url 'profile' username=user.username %}" class="flex items-center gap-1">
+                        <img src="{{ user.avatar.url }}" class="w-7 h-7 rounded-full object-cover border border-[var(--sand)]">
+                        {{ user.username }}
+                    </a>
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button class="text-gray-500 hover:text-[var(--coral)]">Chiqish</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="hover:text-[var(--moss)]">Kirish</a>
+                    <a href="{% url 'register' %}" class="btn-primary">Ro'yxatdan o'tish</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-5xl mx-auto px-4 py-6">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="mb-4 px-4 py-2 rounded-lg bg-[var(--moss)]/10 text-[var(--moss-dark)] text-sm border border-[var(--moss)]/20">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <script>
+        function togglePassword(btn) {
+            var input = btn.previousElementSibling;
+            var isHidden = input.type === 'password';
+            input.type = isHidden ? 'text' : 'password';
+            btn.textContent = isHidden ? '🙈' : '👁';
+        }
+    </script>
+</body>
+</html>

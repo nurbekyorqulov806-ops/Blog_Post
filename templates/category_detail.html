@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load blog_extras %}
+{% block title %}{{ category.name }} — Blog Platform{% endblock %}
+
+{% block content %}
+<h1 class="font-display text-2xl font-semibold mb-6">{{ category.name }}</h1>
+<div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+    {% for post in posts %}
+    <div class="card card-hover overflow-hidden">
+        <a href="{{ post.get_absolute_url }}" class="p-4 block">
+            <p class="font-display font-semibold hover:text-[var(--moss)]">{{ post.title }}</p>
+            <p class="text-gray-500 text-sm mt-1">{{ post.desc|truncatechars:90 }}</p>
+        </a>
+        <div class="px-4 pb-3 pt-3 border-t border-[var(--sand)]">
+            {% include 'like_button.html' with post=post is_liked=post|is_liked_by:request.user %}
+        </div>
+    </div>
+    {% empty %}
+        <p class="text-gray-500">Bu kategoriyada postlar yo'q.</p>
+    {% endfor %}
+</div>
+{% include 'pagination.html' %}
+{% endblock %}

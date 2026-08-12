@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card p-6 flex items-center gap-4 mb-8">
+    <img src="{{ profile_user.avatar.url }}" class="w-20 h-20 rounded-full object-cover border border-[var(--sand)]">
+    <div>
+        <h1 class="font-display text-xl font-semibold">{{ profile_user.username }}</h1>
+        <p class="text-gray-500 text-sm">{{ profile_user.bio }}</p>
+        {% if request.user == profile_user %}
+            <a href="{% url 'profile_edit' %}" class="text-[var(--moss)] text-sm font-medium">Profilni tahrirlash</a>
+        {% endif %}
+    </div>
+</div>
+
+<h2 class="font-display text-lg font-semibold mb-4">Chop etilgan postlar ({{ posts.count }})</h2>
+<div class="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+    {% for post in posts %}
+    <a href="{{ post.get_absolute_url }}" class="card card-hover p-3 block">
+        <p class="font-medium text-sm">{{ post.title }}</p>
+        <p class="meta text-gray-400 mt-1">{{ post.get_status_display }} · {{ post.created_at|date:"d M Y" }}</p>
+    </a>
+    {% empty %}
+        <p class="text-gray-500 text-sm">Hali postlar yo'q.</p>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% if widget.is_initial %}
+    <p class="text-sm text-gray-500 mb-1">
+        Hozirda: <a href="{{ widget.value.url }}" target="_blank" class="text-[var(--moss)] underline">{{ widget.initial }}</a>
+    </p>
+    {% if not widget.required %}
+        <label class="inline-flex items-center gap-1.5 text-sm text-gray-500 mb-2">
+            <input type="checkbox" name="{{ widget.checkbox_name }}" id="{{ widget.checkbox_id }}">
+            <span>Rasmni o'chirish</span>
+        </label>
+    {% endif %}
+    <p class="text-sm text-gray-500 mb-1">O'zgartirish:</p>
+{% endif %}
+<input type="{{ widget.type }}" name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>
