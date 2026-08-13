@@ -7,9 +7,7 @@ from django.utils.text import slugify
 
 
 
-# ---------------------------------------------------------------------------
-# 2.1 — Custom User modeli
-# ---------------------------------------------------------------------------
+
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
     avatar = models.ImageField(
@@ -29,9 +27,10 @@ class CustomUser(AbstractUser):
         return reverse('profile', kwargs={'username': self.username})
 
 
-# ---------------------------------------------------------------------------
-# 2.2 — Category modeli
-# ---------------------------------------------------------------------------
+
+
+
+
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(max_length=120, unique=True, blank=True)
@@ -55,9 +54,11 @@ class Category(models.Model):
         return reverse('category_detail', kwargs={'slug': self.slug})
 
 
-# ---------------------------------------------------------------------------
-# 2.3 — Post modeli
-# ---------------------------------------------------------------------------
+
+
+
+
+
 class Post(models.Model):
     class Status(models.TextChoices):
         PENDING = 'PENDING', 'Moderatsiyada'
@@ -109,9 +110,10 @@ class Post(models.Model):
         return self.likes.filter(user=user).exists()
 
 
-# ---------------------------------------------------------------------------
-# 2.4 — Comment modeli
-# ---------------------------------------------------------------------------
+
+
+
+
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
     author = models.ForeignKey(
@@ -127,9 +129,10 @@ class Comment(models.Model):
         return f'{self.author} -> {self.post} izohi'
 
 
-# ---------------------------------------------------------------------------
-# Like modeli — bosilgan post = sevimli post
-# ---------------------------------------------------------------------------
+
+
+
+
 class Like(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='likes'
@@ -145,9 +148,10 @@ class Like(models.Model):
         return f'{self.user} ♥ {self.post}'
 
 
-# ---------------------------------------------------------------------------
-# PostViewHistory modeli — foydalanuvchi bosgan postlar tarixi
-# ---------------------------------------------------------------------------
+
+
+
+
 class PostViewHistory(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='view_history'

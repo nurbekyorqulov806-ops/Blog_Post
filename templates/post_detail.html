@@ -12,7 +12,10 @@
         {% include 'like_button.html' with post=post is_liked=is_liked %}
     </div>
 
-    <div class="prose max-w-none mb-8 leading-relaxed">{{ post.body|linebreaks }}</div>
+    <div class="prose max-w-none mb-8 leading-relaxed"
+        style="overflow-wrap: anywhere; word-break: break-word;">
+        {{ post.body|linebreaks }}
+    </div>
 
     {% if request.user == post.author or request.user.is_superuser %}
     <div class="flex gap-3 mb-8 text-sm">

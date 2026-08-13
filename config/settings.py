@@ -23,7 +23,7 @@ INSTALLED_APPS = [
 
     'widget_tweaks',
 
-    'blog',  # loyihaning yagona ilovasi: user, post, category, comment, like, history
+    'blog',  
 ]
 
 MIDDLEWARE = [
@@ -126,8 +126,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Forma widgetlari (masalan, avatar file input) ham loyihaning umumiy
-# templates/ papkasidagi shablonlardan foydalana olishi uchun:
+
 FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
 
 LOGIN_URL = 'login'

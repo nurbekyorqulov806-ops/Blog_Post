@@ -37,4 +37,36 @@
 </div>
 
 {% include 'pagination.html' %}
+<p>
+    Sahifa: {{ page_obj.number }} /
+    {{ page_obj.paginator.num_pages }}
+</p>
+
+<p>
+    Jami post: {{ page_obj.paginator.count }}
+</p>
+
+
+<div class="flex justify-center items-center gap-4 mt-8">
+
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}"
+           class="btn-primary">
+            ← Oldingi
+        </a>
+    {% endif %}
+
+    <span>
+        Sahifa: {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+    </span>
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}"
+           class="btn-primary">
+            Keyingi →
+        </a>
+    {% endif %}
+
+</div>
+
 {% endblock %}

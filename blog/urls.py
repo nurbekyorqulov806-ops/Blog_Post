@@ -4,9 +4,6 @@ from . import views
 
 urlpatterns = [
 
-    # =========================
-    # POSTLAR
-    # =========================
 
     path(
         '',
@@ -56,9 +53,6 @@ urlpatterns = [
         name='toggle_like'
     ),
 
-    # =========================
-    # FOYDALANUVCHI
-    # =========================
 
     path(
         'register/',

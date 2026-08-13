@@ -20,9 +20,8 @@ from .models import (
 )
 
 
-# ============================================================
-# 3.1 — REGISTER
-# ============================================================
+
+
 
 def register_view(request):
 
@@ -53,9 +52,11 @@ def register_view(request):
     )
 
 
-# ============================================================
-# LOGIN
-# ============================================================
+
+
+
+
+
 
 def custom_login_view(request):
 
@@ -98,9 +99,11 @@ def custom_login_view(request):
     )
 
 
-# ============================================================
-# LOGOUT
-# ============================================================
+
+
+
+
+
 
 @login_required
 def custom_logout_view(request):
@@ -110,9 +113,11 @@ def custom_logout_view(request):
     return redirect('/')
 
 
-# ============================================================
-# PROFILE EDIT
-# ============================================================
+
+
+
+
+
 
 @login_required
 def profile_edit(request):
@@ -154,9 +159,12 @@ def profile_edit(request):
     )
 
 
-# ============================================================
-# PROFILE DETAIL
-# ============================================================
+
+
+
+
+
+
 
 def profile_detail(request, username):
 
@@ -179,9 +187,11 @@ def profile_detail(request, username):
     )
 
 
-# ============================================================
-# 3.2 — POST LIST
-# ============================================================
+
+
+
+
+
 
 def post_list(request):
 
@@ -192,9 +202,11 @@ def post_list(request):
         'category'
     )
 
-    # -------------------------
-    # SEARCH
-    # -------------------------
+
+
+
+
+
 
     query = request.GET.get('q')
 
@@ -208,9 +220,9 @@ def post_list(request):
             Q(author__username__icontains=query)
         )
 
-    # -------------------------
-    # SORT
-    # -------------------------
+
+
+
 
     sort = request.GET.get('sort')
 
@@ -226,9 +238,11 @@ def post_list(request):
             '-created_at'
         )
 
-    # -------------------------
-    # PAGINATION
-    # -------------------------
+
+
+
+
+
 
     paginator = Paginator(
         posts,
@@ -257,9 +271,11 @@ def post_list(request):
     )
 
 
-# ============================================================
-# CATEGORY DETAIL
-# ============================================================
+
+
+
+
+
 
 def category_detail(request, slug):
 
@@ -302,9 +318,9 @@ def category_detail(request, slug):
     )
 
 
-# ============================================================
-# POST DETAIL
-# ============================================================
+
+
+
 
 def post_detail(request, slug):
 
@@ -312,9 +328,10 @@ def post_detail(request, slug):
         Post,
         slug=slug
     )
-# -------------------------
-# VIEWS COUNT + HISTORY
-# -------------------------
+
+
+
+
 
     if request.user.is_authenticated:
 
@@ -340,23 +357,20 @@ def post_detail(request, slug):
 
 
 
-    # -------------------------
-    # COMMENTS
-    # -------------------------
+
+
+
 
     comments = post.comments.select_related(
         'author'
     )
 
-    # -------------------------
-    # COMMENT FORM
-    # -------------------------
+
 
     comment_form = CommentForm()
 
-    # -------------------------
-    # RELATED POSTS
-    # -------------------------
+
+
 
     related_posts = Post.objects.filter(
         category=post.category,
@@ -365,9 +379,9 @@ def post_detail(request, slug):
         pk=post.pk
     )[:3]
 
-    # -------------------------
-    # LIKE
-    # -------------------------
+
+
+
 
     is_liked = post.is_liked_by(
         request.user
@@ -386,9 +400,9 @@ def post_detail(request, slug):
     )
 
 
-# ============================================================
-# POST CREATE
-# ============================================================
+
+
+
 
 @login_required
 def post_create(request):
@@ -408,7 +422,6 @@ def post_create(request):
 
             post.author = request.user
 
-            # Moderatsiyaga yuboriladi
             post.status = Post.Status.PENDING
 
             post.save()
@@ -436,9 +449,11 @@ def post_create(request):
     )
 
 
-# ============================================================
-# POST UPDATE
-# ============================================================
+
+
+
+
+
 
 @login_required
 def post_update(request, slug):
@@ -448,9 +463,9 @@ def post_update(request, slug):
         slug=slug
     )
 
-    # -------------------------
-    # PERMISSION
-    # -------------------------
+
+
+
 
     if (
         request.user != post.author
@@ -458,9 +473,9 @@ def post_update(request, slug):
     ):
         raise PermissionDenied
 
-    # -------------------------
-    # UPDATE
-    # -------------------------
+
+
+
 
     if request.method == 'POST':
 
@@ -495,9 +510,10 @@ def post_update(request, slug):
     )
 
 
-# ============================================================
-# POST DELETE
-# ============================================================
+
+
+
+
 
 @login_required
 def post_delete(request, slug):
@@ -507,9 +523,9 @@ def post_delete(request, slug):
         slug=slug
     )
 
-    # -------------------------
-    # PERMISSION
-    # -------------------------
+
+
+
 
     if (
         request.user != post.author
@@ -517,9 +533,11 @@ def post_delete(request, slug):
     ):
         raise PermissionDenied
 
-    # -------------------------
-    # DELETE
-    # -------------------------
+
+
+
+
+
 
     if request.method == 'POST':
 
@@ -538,9 +556,10 @@ def post_delete(request, slug):
     )
 
 
-# ============================================================
-# COMMENT
-# ============================================================
+
+
+
+
 
 @login_required
 @require_POST
@@ -572,9 +591,10 @@ def add_comment(request, slug):
     )
 
 
-# ============================================================
-# LIKE / UNLIKE
-# ============================================================
+
+
+
+
 
 @login_required
 @require_POST
@@ -600,9 +620,11 @@ def toggle_like(request, slug):
 
         liked = True
 
-    # -------------------------
-    # AJAX
-    # -------------------------
+
+
+
+
+
 
     if request.headers.get(
         'x-requested-with'
@@ -621,9 +643,10 @@ def toggle_like(request, slug):
     )
 
 
-# ============================================================
-# FAVORITES
-# ============================================================
+
+
+
+
 
 @login_required
 def my_favorites(request):
@@ -643,9 +666,11 @@ def my_favorites(request):
     )
 
 
-# ============================================================
-# HISTORY
-# ============================================================
+
+
+
+
+
 
 @login_required
 def my_history(request):
@@ -663,3 +688,13 @@ def my_history(request):
             'history': history
         }
     )
+
+
+
+
+
+
+
+
+
+
